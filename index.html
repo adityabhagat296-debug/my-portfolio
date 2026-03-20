@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Aditya Bhagat — Finance & Investment Banking</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400;500&family=Bebas+Neue&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --black: #080808;
+      --deep: #0d0d0d;
+      --surface: #111111;
+      --card: #161616;
+      --border: #222222;
+      --gold: #c9a84c;
+      --gold-light: #e8c97a;
+      --gold-dim: #7a6130;
+      --white: #f0ece4;
+      --muted: #6b6760;
+      --text: #c8c4bc;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--black);
+      color: var(--text);
+      font-family: 'DM Mono', monospace;
+      font-weight: 300;
+      overflow-x: hidden;
+      cursor: none;
+    }
+    .cursor {
+      width: 8px; height: 8px;
+      background: var(--gold);
+      border-radius: 50%;
+      position: fixed; top: 0; left: 0;
+      pointer-events: none; z-index: 9999;
+      transition: transform 0.1s ease;
+    }
+    .cursor-ring {
+      width: 32px; height: 32px;
+      border: 1px solid var(--gold-dim);
+      border-radius: 50%;
+      position: fixed; top: 0; left: 0;
+      pointer-events: none; z-index: 9998;
+      transition: transform 0.15s ease, width 0.2s, height 0.2s, border-color 0.2s;
+    }
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 9990; opacity: 0.4;
+    }
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 28px 60px;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.4s, background 0.4s, padding 0.3s;
+    }
+    nav.scrolled {
+      background: rgba(8,8,8,0.92);
+      border-color: var(--border);
+      padding: 18px 60px;
+      backdrop-filter: blur(12px);
+    }
+    .nav-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 22px; letter-spacing: 4px;
+      color: var(--gold); text-decoration: none;
+    }
+    .nav-links { display: flex; gap: 40px; list-style: none; }
+    .nav-links a {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
+      color: var(--muted); text-decoration: none; transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--gold); }
+    .hero {
+      min-height: 100vh;
+      display: flex; align-items: center;
+      padding: 120px 60px 60px;
+      position: relative; overflow: hidden;
+    }
+    .hero-bg {
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 70% 50%, rgba(201,168,76,0.04) 0%, transparent 70%),
+                  radial-gradient(ellipse 40% 40% at 20% 80%, rgba(201,168,76,0.03) 0%, transparent 60%);
+    }
+    .hero-line {
+      position: absolute; top: 0; left: 60px;
+      width: 1px; height: 100%;
+      background: linear-gradient(to bottom, transparent, var(--gold-dim), transparent);
+      opacity: 0.3;
+    }
+    .hero-content { position: relative; z-index: 1; max-width: 900px; }
+    .hero-tag {
+      font-size: 10px; letter-spacing: 4px; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 32px;
+      display: flex; align-items: center; gap: 16px;
+      opacity: 0; animation: fadeUp 0.8s 0.2s forwards;
+    }
+    .hero-tag::before { content: ''; width: 40px; height: 1px; background: var(--gold); }
+    .hero-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(72px, 10vw, 140px);
+      font-weight: 300; line-height: 0.9;
+      color: var(--white); letter-spacing: -2px; margin-bottom: 8px;
+      opacity: 0; animation: fadeUp 0.8s 0.4s forwards;
+    }
+    .hero-name em { font-style: italic; color: var(--gold); }
+    .hero-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(18px, 3vw, 32px);
+      font-weight: 300; font-style: italic;
+      color: var(--muted); margin-bottom: 48px;
+      opacity: 0; animation: fadeUp 0.8s 0.6s forwards;
+    }
+    .hero-desc {
+      font-size: 12px; line-height: 2;
+      color: var(--muted); max-width: 520px; margin-bottom: 56px;
+      opacity: 0; animation: fadeUp 0.8s 0.8s forwards;
+    }
+    .hero-ctas {
+      display: flex; gap: 20px; align-items: center;
+      opacity: 0; animation: fadeUp 0.8s 1s forwards;
+    }
+    .btn-primary {
+      padding: 14px 36px; background: var(--gold);
+      color: var(--black); font-family: 'DM Mono', monospace;
+      font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
+      text-decoration: none; border: none; cursor: none;
+      transition: background 0.2s, transform 0.2s; display: inline-block;
+    }
+    .btn-primary:hover { background: var(--gold-light); transform: translateY(-2px); }
+    .btn-secondary {
+      padding: 14px 36px; border: 1px solid var(--border);
+      color: var(--muted); font-family: 'DM Mono', monospace;
+      font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
+      text-decoration: none; cursor: none;
+      transition: border-color 0.2s, color 0.2s; display: inline-block;
+    }
+    .btn-secondary:hover { border-color: var(--gold-dim); color: var(--gold); }
+    .hero-stats {
+      position: absolute; right: 60px; bottom: 80px;
+      display: flex; flex-direction: column; gap: 32px;
+      opacity: 0; animation: fadeIn 1s 1.2s forwards;
+    }
+    .stat { text-align: right; }
+    .stat-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 42px; color: var(--white); line-height: 1; letter-spacing: 2px;
+    }
+    .stat-num span { color: var(--gold); }
+    .stat-label { font-size: 9px; letter-spacing: 3px; color: var(--muted); text-transform: uppercase; }
+    section { padding: 120px 60px; }
+    .section-header {
+      display: flex; align-items: center; gap: 24px; margin-bottom: 72px;
+    }
+    .section-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 13px; letter-spacing: 3px; color: var(--gold-dim);
+    }
+    .section-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(36px, 5vw, 64px);
+      font-weight: 300; color: var(--white); letter-spacing: -1px;
+    }
+    .section-line { flex: 1; height: 1px; background: linear-gradient(to right, var(--border), transparent); }
+    #about { background: var(--deep); }
+    .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; }
+    .about-text p { font-size: 13px; line-height: 2.2; color: var(--muted); margin-bottom: 24px; }
+    .about-text p strong { color: var(--gold); font-weight: 400; }
+    .about-highlights { display: flex; flex-direction: column; gap: 1px; }
+    .highlight-item {
+      padding: 24px 28px; background: var(--card);
+      border-left: 2px solid transparent;
+      transition: border-color 0.3s, background 0.3s;
+    }
+    .highlight-item:hover { border-color: var(--gold); background: #1a1a1a; }
+    .highlight-item h4 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 18px; font-weight: 400; color: var(--white); margin-bottom: 6px;
+    }
+    .highlight-item p { font-size: 11px; color: var(--muted); line-height: 1.8; }
+    #experience { background: var(--black); }
+    .exp-list { display: flex; flex-direction: column; gap: 2px; }
+    .exp-item {
+      display: grid; grid-template-columns: 200px 1fr auto;
+      gap: 40px; align-items: start;
+      padding: 36px 40px; background: var(--card);
+      border: 1px solid var(--border);
+      transition: border-color 0.3s, transform 0.3s;
+      position: relative; overflow: hidden;
+    }
+    .exp-item::before {
+      content: ''; position: absolute;
+      left: 0; top: 0; bottom: 0; width: 2px;
+      background: var(--gold);
+      transform: scaleY(0); transform-origin: bottom;
+      transition: transform 0.3s;
+    }
+    .exp-item:hover::before { transform: scaleY(1); }
+    .exp-item:hover { border-color: var(--gold-dim); transform: translateX(4px); }
+    .exp-date { font-size: 10px; letter-spacing: 2px; color: var(--gold-dim); padding-top: 4px; }
+    .exp-role {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px; font-weight: 400; color: var(--white); margin-bottom: 6px;
+    }
+    .exp-company { font-size: 11px; letter-spacing: 2px; color: var(--gold); margin-bottom: 12px; text-transform: uppercase; }
+    .exp-desc { font-size: 11px; line-height: 2; color: var(--muted); }
+    .exp-tag {
+      font-size: 9px; letter-spacing: 2px; text-transform: uppercase;
+      padding: 6px 14px; border: 1px solid var(--border);
+      color: var(--muted); white-space: nowrap; height: fit-content;
+    }
+    #projects { background: var(--deep); }
+    .projects-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
+    .project-card {
+      background: var(--card); padding: 40px 36px;
+      border: 1px solid var(--border);
+      position: relative; overflow: hidden;
+      transition: border-color 0.3s; cursor: none;
+    }
+    .project-card::after {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(circle at 50% 0%, rgba(201,168,76,0.06), transparent 70%);
+      opacity: 0; transition: opacity 0.4s;
+    }
+    .project-card:hover { border-color: var(--gold-dim); }
+    .project-card:hover::after { opacity: 1; }
+    .project-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 48px; color: var(--border); line-height: 1; margin-bottom: 20px;
+      transition: color 0.3s;
+    }
+    .project-card:hover .project-num { color: var(--gold-dim); }
+    .project-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px; font-weight: 400; color: var(--white); margin-bottom: 12px;
+    }
+    .project-desc { font-size: 11px; line-height: 2; color: var(--muted); margin-bottom: 24px; }
+    .project-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+    .tag {
+      font-size: 9px; letter-spacing: 2px; text-transform: uppercase;
+      padding: 4px 10px; background: var(--surface);
+      border: 1px solid var(--border); color: var(--muted);
+    }
+    #achievements { background: var(--black); }
+    .achievements-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2px; }
+    .achievement-item {
+      padding: 40px; background: var(--card);
+      border: 1px solid var(--border);
+      display: flex; gap: 28px; align-items: flex-start;
+      transition: border-color 0.3s, background 0.3s;
+    }
+    .achievement-item:hover { border-color: var(--gold-dim); background: #161616; }
+    .achievement-icon {
+      font-size: 28px; flex-shrink: 0;
+      width: 56px; height: 56px; background: var(--surface);
+      border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .achievement-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 20px; font-weight: 400; color: var(--white); margin-bottom: 8px;
+    }
+    .achievement-desc { font-size: 11px; line-height: 1.9; color: var(--muted); }
+    #contact { background: var(--deep); text-align: center; position: relative; overflow: hidden; }
+    #contact::before {
+      content: 'CONNECT';
+      position: absolute;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(100px, 20vw, 260px);
+      color: var(--border); opacity: 0.15;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      white-space: nowrap; pointer-events: none; letter-spacing: 20px;
+    }
+    .contact-inner { position: relative; z-index: 1; max-width: 600px; margin: 0 auto; }
+    .contact-subtitle {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(36px, 5vw, 72px);
+      font-weight: 300; font-style: italic; color: var(--white); margin-bottom: 20px;
+    }
+    .contact-desc { font-size: 12px; line-height: 2; color: var(--muted); margin-bottom: 48px; }
+    .contact-links { display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; }
+    .contact-link {
+      padding: 14px 28px; border: 1px solid var(--border);
+      color: var(--muted); font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
+      text-decoration: none; cursor: none;
+      transition: border-color 0.2s, color 0.2s, background 0.2s;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .contact-link:hover { border-color: var(--gold); color: var(--gold); }
+    .contact-link.primary { background: var(--gold); border-color: var(--gold); color: var(--black); }
+    .contact-link.primary:hover { background: var(--gold-light); border-color: var(--gold-light); }
+    footer {
+      padding: 32px 60px; border-top: 1px solid var(--border);
+      display: flex; justify-content: space-between; align-items: center;
+      background: var(--black);
+    }
+    footer p { font-size: 10px; letter-spacing: 2px; color: var(--muted); }
+    .footer-logo { font-family: 'Bebas Neue', sans-serif; font-size: 16px; letter-spacing: 4px; color: var(--gold-dim); }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.7s ease, transform 0.7s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    ::-webkit-scrollbar { width: 3px; }
+    ::-webkit-scrollbar-track { background: var(--black); }
+    ::-webkit-scrollbar-thumb { background: var(--gold-dim); }
+    @media (max-width: 900px) {
+      nav { padding: 20px 24px; } nav.scrolled { padding: 14px 24px; }
+      .nav-links { display: none; }
+      .hero { padding: 100px 24px 60px; }
+      section { padding: 80px 24px; }
+      .about-grid { grid-template-columns: 1fr; gap: 40px; }
+      .projects-grid { grid-template-columns: 1fr; }
+      .achievements-grid { grid-template-columns: 1fr; }
+      .exp-item { grid-template-columns: 1fr; gap: 12px; }
+      .hero-stats { display: none; }
+      footer { flex-direction: column; gap: 12px; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+  <nav id="navbar">
+    <a class="nav-logo" href="#">AB</a>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#experience">Experience</a></li>
+      <li><a href="#projects">Research</a></li>
+      <li><a href="#achievements">Achievements</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+  <section class="hero" id="home">
+    <div class="hero-bg"></div>
+    <div class="hero-line"></div>
+    <div class="hero-content">
+      <div class="hero-tag">Aspiring Investment Banker</div>
+      <h1 class="hero-name">Aditya<br/><em>Bhagat</em></h1>
+      <p class="hero-title">Finance · Equity Research · PGDM — IMI Kolkata</p>
+      <p class="hero-desc">A finance professional with a sharp analytical edge, combining equity research experience, rigorous academic training, and a relentless drive to create value at the intersection of capital markets and strategic advisory.</p>
+      <div class="hero-ctas">
+        <a href="#experience" class="btn-primary">View Experience</a>
+        <a href="#contact" class="btn-secondary">Get In Touch</a>
+      </div>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><div class="stat-num">2<span>+</span></div><div class="stat-label">Internships</div></div>
+      <div class="stat"><div class="stat-num">2<span>×</span></div><div class="stat-label">Gold Medals</div></div>
+      <div class="stat"><div class="stat-num">Top<span>10</span></div><div class="stat-label">B.Com Batch</div></div>
+    </div>
+  </section>
+  <section id="about">
+    <div class="section-header reveal">
+      <span class="section-num">01</span>
+      <h2 class="section-title">About Me</h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="about-grid">
+      <div class="about-text reveal">
+        <p>I am <strong>Aditya Bhagat</strong>, a PGDM candidate at <strong>IMI Kolkata</strong> with a foundation in B.Com (Accounting & Finance) from SIES College, where I graduated in the <strong>top 10% of my batch</strong>.</p>
+        <p>My career focus is <strong>Investment Banking</strong> — advising on transactions, structuring deals, and driving strategic value creation. I have built hands-on experience through equity research internships at <strong>Asit C Mehta Investments</strong> and <strong>Millenium Money Finance</strong>, complemented by certifications from <strong>CFI</strong> and the <strong>J.P. Morgan IB Virtual Program</strong>.</p>
+        <p>Beyond finance, I captained my college cricket team at the zonal level, <strong>trained with Kolkata Knight Riders</strong>, and won <strong>gold medals</strong> at both the Open National and State Championships in Karate — a testament to the discipline and competitive edge I bring to everything I do.</p>
+      </div>
+      <div class="about-highlights reveal">
+        <div class="highlight-item"><h4>Academic Excellence</h4><p>Top 10% — B.Com (Accounting & Finance), SIES College. PGDM at IMI Kolkata.</p></div>
+        <div class="highlight-item"><h4>Technical Proficiency</h4><p>Financial Modeling · Financial Statement Analysis · Excel · Tableau · SAP Fiori</p></div>
+        <div class="highlight-item"><h4>Leadership & Entrepreneurship</h4><p>Treasurer, Rotaract Club · Founder, Glassifyy · Team Leader, Viral Fission</p></div>
+        <div class="highlight-item"><h4>Target Role</h4><p>Investment Banking Analyst — M&A Advisory, Capital Markets, Strategic Finance</p></div>
+      </div>
+    </div>
+  </section>
+  <section id="experience">
+    <div class="section-header reveal">
+      <span class="section-num">02</span>
+      <h2 class="section-title">Experience</h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="exp-list">
+      <div class="exp-item reveal">
+        <div class="exp-date">2024 — Present</div>
+        <div>
+          <div class="exp-role">Equity Research Intern</div>
+          <div class="exp-company">Asit C Mehta Investments Intermediaries</div>
+          <div class="exp-desc">Conducted fundamental analysis on listed equities, prepared sector reports, and developed investment theses across multiple industries. Built financial models to support buy/sell recommendations.</div>
+        </div>
+        <div class="exp-tag">Equity Research</div>
+      </div>
+      <div class="exp-item reveal">
+        <div class="exp-date">2024</div>
+        <div>
+          <div class="exp-role">Equity Research Intern</div>
+          <div class="exp-company">Millenium Money Finance</div>
+          <div class="exp-desc">Performed in-depth financial statement analysis, industry research, and competitive benchmarking. Contributed to client-facing research reports on BFSI and technology sectors.</div>
+        </div>
+        <div class="exp-tag">Financial Analysis</div>
+      </div>
+      <div class="exp-item reveal">
+        <div class="exp-date">2023 — 2024</div>
+        <div>
+          <div class="exp-role">Team Leader</div>
+          <div class="exp-company">Viral Fission</div>
+          <div class="exp-desc">Led a team executing brand campaigns and on-ground activations. Developed strategic communication frameworks and managed cross-functional collaboration to drive measurable outcomes.</div>
+        </div>
+        <div class="exp-tag">Leadership</div>
+      </div>
+      <div class="exp-item reveal">
+        <div class="exp-date">2022 — 2023</div>
+        <div>
+          <div class="exp-role">J.P. Morgan Investment Banking Virtual Program</div>
+          <div class="exp-company">Forage · J.P. Morgan</div>
+          <div class="exp-desc">Completed a comprehensive IB simulation covering pitch book preparation, DCF modeling, precedent transaction analysis, and deal structuring fundamentals.</div>
+        </div>
+        <div class="exp-tag">IB Program</div>
+      </div>
+    </div>
+  </section>
+  <section id="projects">
+    <div class="section-header reveal">
+      <span class="section-num">03</span>
+      <h2 class="section-title">Research & Projects</h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="projects-grid">
+      <div class="project-card reveal"><div class="project-num">01</div><div class="project-title">Coforge Limited — Industry Analysis</div><div class="project-desc">Applied Porter's Five Forces framework to analyze Coforge's competitive positioning in the IT services sector, evaluating growth drivers, margin dynamics, and valuation implications.</div><div class="project-tags"><span class="tag">Porter's 5 Forces</span><span class="tag">IT Sector</span><span class="tag">Equity</span></div></div>
+      <div class="project-card reveal"><div class="project-num">02</div><div class="project-title">Banking Sector Deep Dive</div><div class="project-desc">Comparative analysis of HDFC Bank, ICICI Bank, SBI, and PhonePe covering NIM trends, asset quality, digital strategy, and relative valuation across the BFSI landscape.</div><div class="project-tags"><span class="tag">BFSI</span><span class="tag">Valuation</span><span class="tag">Comparative</span></div></div>
+      <div class="project-card reveal"><div class="project-num">03</div><div class="project-title">Glassifyy — Venture Launch</div><div class="project-desc">Founded a direct-to-consumer glass water bottle brand. Developed the business model, pricing strategy, and go-to-market approach from ideation through early-stage execution.</div><div class="project-tags"><span class="tag">Entrepreneurship</span><span class="tag">Strategy</span><span class="tag">D2C</span></div></div>
+      <div class="project-card reveal"><div class="project-num">04</div><div class="project-title">Goldman Sachs MIS Framework</div><div class="project-desc">Developed a comprehensive MIS analysis incorporating TPS, DSS, ESS, SWOT, Porter's Five Forces, and Kaplan & Norton Strategy Maps.</div><div class="project-tags"><span class="tag">MIS</span><span class="tag">Strategy</span><span class="tag">Frameworks</span></div></div>
+      <div class="project-card reveal"><div class="project-num">05</div><div class="project-title">BFSI Digital Transactions Analytics</div><div class="project-desc">Analyzed digital transaction data across the BFSI sector using Tableau, uncovering volume trends, user behavior patterns, and actionable insights for product strategy.</div><div class="project-tags"><span class="tag">Tableau</span><span class="tag">Data Analytics</span><span class="tag">BFSI</span></div></div>
+      <div class="project-card reveal"><div class="project-num">06</div><div class="project-title">Coastal Agri-Venture Feasibility</div><div class="project-desc">Evaluated feasibility of a coastal farming and beekeeping venture across Digha and Sundarban regions, covering market sizing, capex requirements, and revenue modeling.</div><div class="project-tags"><span class="tag">Feasibility</span><span class="tag">Agri</span><span class="tag">Modeling</span></div></div>
+    </div>
+  </section>
+  <section id="achievements">
+    <div class="section-header reveal">
+      <span class="section-num">04</span>
+      <h2 class="section-title">Achievements</h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="achievements-grid">
+      <div class="achievement-item reveal"><div class="achievement-icon">🥇</div><div><div class="achievement-title">Gold Medal — Open National Championship</div><div class="achievement-desc">Won gold at the Open National Karate Championship, representing the pinnacle of competitive discipline, mental resilience, and elite performance under pressure.</div></div></div>
+      <div class="achievement-item reveal"><div class="achievement-icon">🥇</div><div><div class="achievement-title">Gold Medal — Open State Championship</div><div class="achievement-desc">Secured gold at the Open State Karate Championship, demonstrating consistent high-level performance across multi-tier competitive circuits.</div></div></div>
+      <div class="achievement-item reveal"><div class="achievement-icon">🏏</div><div><div class="achievement-title">Kolkata Knight Riders Practice Sessions</div><div class="achievement-desc">Practiced with KKR — one of the IPL's marquee franchises — combining elite sporting exposure with the discipline required to perform at the highest level.</div></div></div>
+      <div class="achievement-item reveal"><div class="achievement-icon">🎓</div><div><div class="achievement-title">Top 10% — B.Com Batch, SIES College</div><div class="achievement-desc">Graduated in the top decile of the Accounting & Finance program, demonstrating rigorous academic discipline alongside a rich extracurricular portfolio.</div></div></div>
+      <div class="achievement-item reveal"><div class="achievement-icon">🏆</div><div><div class="achievement-title">Tata Social Enterprise Challenge — IIM Calcutta</div><div class="achievement-desc">Represented IMI Kolkata at the prestigious TSEC hosted by IIM Calcutta, competing against top B-school teams on social impact business models.</div></div></div>
+      <div class="achievement-item reveal"><div class="achievement-icon">💼</div><div><div class="achievement-title">Treasurer — Rotaract Club</div><div class="achievement-desc">Managed financial operations and budgeting for institutional events, developing real-world financial governance and organizational leadership skills.</div></div></div>
+    </div>
+  </section>
+  <section id="contact">
+    <div class="contact-inner">
+      <div class="section-num reveal" style="margin-bottom:16px">05</div>
+      <h2 class="contact-subtitle reveal">Let's Connect</h2>
+      <p class="contact-desc reveal">Open to Investment Banking, Private Equity, and Strategy Consulting opportunities. Always interested in meaningful conversations about markets, deals, and value creation.</p>
+      <div class="contact-links reveal">
+        <a href="mailto:your@email.com" class="contact-link primary">✉ Email Me</a>
+        <a href="https://linkedin.com/in/yourprofile" target="_blank" class="contact-link">in LinkedIn</a>
+        <a href="#" class="contact-link">↓ Resume</a>
+      </div>
+    </div>
+  </section>
+  <footer>
+    <p>© 2025 Aditya Bhagat. All rights reserved.</p>
+    <div class="footer-logo">AB</div>
+    <p>Built for ambition.</p>
+  </footer>
+  <script>
+    const cursor = document.getElementById('cursor');
+    const ring = document.getElementById('cursorRing');
+    let mx = 0, my = 0, rx = 0, ry = 0;
+    document.addEventListener('mousemove', e => {
+      mx = e.clientX; my = e.clientY;
+      cursor.style.transform = `translate(${mx - 4}px, ${my - 4}px)`;
+    });
+    function animateRing() {
+      rx += (mx - rx - 16) * 0.12;
+      ry += (my - ry - 16) * 0.12;
+      ring.style.transform = `translate(${rx}px, ${ry}px)`;
+      requestAnimationFrame(animateRing);
+    }
+    animateRing();
+    document.querySelectorAll('a, button').forEach(el => {
+      el.addEventListener('mouseenter', () => { ring.style.width = '48px'; ring.style.height = '48px'; ring.style.borderColor = 'var(--gold)'; });
+      el.addEventListener('mouseleave', () => { ring.style.width = '32px'; ring.style.height = '32px'; ring.style.borderColor = 'var(--gold-dim)'; });
+    });
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => { navbar.classList.toggle('scrolled', window.scrollY > 50); });
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) { setTimeout(() => entry.target.classList.add('visible'), i * 80); observer.unobserve(entry.target); }
+      });
+    }, { threshold: 0.1 });
+    reveals.forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>
