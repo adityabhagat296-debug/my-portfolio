@@ -1,2 +1,2 @@
 # my-portfolio
-Personal portfolio and branding website — Finance &amp; Equity Research Professional
+Personal branding website - Aspiring Investment Banker & Strategy Consultant | Finance | Equity Research | PGDM IMI Kolkata
